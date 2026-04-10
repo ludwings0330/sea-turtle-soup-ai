@@ -1,37 +1,35 @@
 # 바다거북스프 AI 게임 — 디자인 시스템
 
 ## 방향
-- 크라임씬 느낌 — 어둡고 무거운 수사물 분위기
+- CLI 터미널 컨셉 — 레트로 터미널 에뮬레이터 느낌
 - Mobile First (기준 해상도: 390px)
-- 미니멀 — 여백으로 호흡, 불필요한 장식 제거
+- 모노스페이스 폰트, 프롬프트 `>` 표시, 타이핑 효과
 
 ---
 
 ## 컬러 (5개)
 ```css
---color-bg       : #0d0d0f;  /* 배경 — 거의 블랙 */
---color-surface  : #1a1a1f;  /* 카드, 입력창, 말풍선 */
---color-primary  : #c41e1e;  /* 포인트 — 핏빛 레드 */
---color-text     : #e8e6e0;  /* 본문 — 누런 백지 느낌 */
---color-muted    : #6b6b6b;  /* 보조 텍스트, 비활성 */
+--color-bg      : #0d0d0d;  /* 배경 — 터미널 블랙 */
+--color-surface : #1a1a1a;  /* 카드, 입력창 */
+--color-primary : #00ff41;  /* 터미널 그린 */
+--color-text    : #00ff41;  /* 본문 텍스트 */
+--color-muted   : #006b1b;  /* 보조 텍스트, 비활성 */
 ```
 
 ---
 
 ## 타이포그래피
-- **폰트**: `Noto Serif KR` (한국어 명조체, 수사 서류 느낌)
+- **폰트**: `JetBrains Mono` (모노스페이스)
 - CDN: Google Fonts
 
 ```css
---text-xs   : 12px;
---text-sm   : 14px;
---text-base : 16px;
---text-lg   : 18px;
---text-xl   : 22px;
---text-2xl  : 28px;
+--text-xs   : 11px;
+--text-sm   : 13px;
+--text-base : 15px;
+--text-lg   : 17px;
+--text-xl   : 20px;
 
 --font-regular : 400;
---font-medium  : 500;
 --font-bold    : 700;
 ```
 
@@ -49,56 +47,89 @@
 
 ---
 
+## 효과
+```css
+/* 커서 깜빡임 */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+.cursor::after {
+  content: '_';
+  animation: blink 1s step-end infinite;
+}
+
+/* 레트로 지지직 효과 — 주기적, 약하게 */
+@keyframes flicker {
+  0%, 89%, 91%, 93%, 100% { opacity: 1; }
+  90%                      { opacity: 0.97; }
+  92%                      { opacity: 0.94; }
+}
+body {
+  animation: flicker 8s infinite;
+}
+
+/* 스캔라인 오버레이 */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.05) 2px,
+    rgba(0,0,0,0.05) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* AI 응답 타이핑 효과 */
+@keyframes typing {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+```
+
+---
+
 ## 컴포넌트 규칙
+
+### 프롬프트 라인
+```
+> You: [입력 내용]
+> AI:  [응답 내용]
+```
 
 ### 버튼
 ```css
-/* Primary */
-background: var(--color-primary);
-color: var(--color-text);
+background: transparent;
+color: var(--color-primary);
+border: 1px solid var(--color-primary);
 height: 52px;
 border-radius: 2px;
-font-size: var(--text-base);
-font-weight: var(--font-bold);
+font-family: 'JetBrains Mono';
 letter-spacing: 1px;
 
-/* Ghost */
-background: transparent;
-border: 1px solid var(--color-muted);
-color: var(--color-text);
+/* hover */
+background: var(--color-primary);
+color: var(--color-bg);
 ```
 
 ### 입력창
 ```css
-background: var(--color-surface);
-border: 1px solid transparent;
-border-radius: 2px;
-padding: var(--space-md);
+background: transparent;
+border: none;
+border-bottom: 1px solid var(--color-primary);
+color: var(--color-primary);
+font-family: 'JetBrains Mono';
 font-size: var(--text-base);
-color: var(--color-text);
-
-/* focus */
-border-color: var(--color-primary);
+caret-color: var(--color-primary);
 ```
 
-### 말풍선 (채팅)
-```css
-/* AI 응답 */
-background: var(--color-surface);
-border-left: 2px solid var(--color-primary);
-border-radius: 0 4px 4px 0;
-padding: var(--space-md);
-max-width: 85%;
-align-self: flex-start;
-
-/* 플레이어 입력 */
-background: transparent;
-border: 1px solid var(--color-muted);
-border-radius: 4px;
-padding: var(--space-md);
-max-width: 85%;
-align-self: flex-end;
-color: var(--color-muted);
+### 구분선
+```
+> ──────────────────────────────
 ```
 
 ---
@@ -107,68 +138,91 @@ color: var(--color-muted);
 
 ### 랜딩 (`/`)
 ```
-┌─────────────────────┐
-│                     │
-│   타이틀 + 부제목    │
-│                     │
-│   [게임 시작]        │
-│   [문제 제출]        │
-│                     │
-└─────────────────────┘
+████████╗██╗   ██╗██████╗ ████████╗██╗     ███████╗
+...
+
+> 바다거북스프 v1.0.0
+> 시스템 초기화 중...........OK
+> AI 에이전트 연결 중.........OK
+>
+> ──────────────────────────────
+> 바다거북스프는 수평적 사고 퍼즐입니다.
+> AI가 제시하는 기묘한 상황의 전말을
+> 예/아니오 질문만으로 추리하세요.
+> ──────────────────────────────
+>
+> [1] 게임 시작
+> [2] 스토리 제출
+>
+> 선택하세요: _
 ```
 
 ### 문제 선택 (`/select`)
 ```
-┌─────────────────────┐
-│ Header              │
-├─────────────────────┤
-│ [AI가 골라줘]        │
-├─────────────────────┤
-│ 문제 카드 목록       │
-│ ┌─────────────────┐ │
-│ │ 문제 제목        │ │
-│ └─────────────────┘ │
-│ ...                 │
-└─────────────────────┘
+> 문제를 선택하세요.
+> ──────────────────────────────
+>
+> [1] 바다거북 스프          ★★★☆☆
+> [2] 엘리베이터의 남자      ★★★★☆
+> [3] 전쟁터의 외과의사      ★★☆☆☆
+>
+> [0] 진행자에게 새 사건을 요청한다
+>
+> ──────────────────────────────
+> 선택하세요: _
 ```
 
 ### 게임 (`/game`)
 ```
-┌─────────────────────┐
-│ Header (문제 제목)   │
-├─────────────────────┤
-│                     │
-│  채팅 영역 (스크롤)  │
-│                     │
-├─────────────────────┤
-│ [힌트] [정답 공개]   │
-│ [입력창      ][전송] │
-└─────────────────────┘
+> ──────────────────────────────
+> [CASE FILE #002]
+>
+> 한 남자가 매일 아침 엘리베이터를 타고
+> 1층으로 내려간다. 하지만 돌아올 때는
+> 7층까지만 타고 나머지는 걸어서 올라간다.
+> 왜일까?
+> ──────────────────────────────
+>
+> You: 남자는 건강한 사람인가요?
+> AI:  네.
+>
+> You: 엘리베이터가 고장난건가요?
+> AI:  아니오.
+>
+> ──────────────────────────────
+> [H] 힌트 (2/3)  [A] 정답공개
+> You: _
 ```
 
-### 문제 제출 (`/submit`)
+### 스토리 제출 (`/submit`)
 ```
-┌─────────────────────┐
-│ Header              │
-├─────────────────────┤
-│ 닉네임 입력          │
-│ 문제 상황 입력       │
-│ 전말 입력            │
-│ [제출하기]           │
-└─────────────────────┘
+> 스토리 제출 모드
+> ──────────────────────────────
+> AI가 제출된 스토리를 검토합니다.
+> 관리자 승인 후 공개됩니다.
+> ──────────────────────────────
+>
+> 닉네임: _
+>
+> 문제 상황: _
+>
+> 전말: _
+>
+> ──────────────────────────────
+> [S] 제출하기  [Q] 취소
 ```
 
 ### 관리자 (`/admin`)
 ```
-┌─────────────────────┐
-│ Header              │
-├─────────────────────┤
-│ 대기 문제 목록       │
-│ ┌─────────────────┐ │
-│ │ 문제 + 평가결과  │ │
-│ │ [승인]  [반려]   │ │
-│ └─────────────────┘ │
-└─────────────────────┘
+> 관리자 모드
+> ──────────────────────────────
+> [대기중: 3건]
+>
+> #001 닉네임: 홍길동
+>      논리: 4/5  흥미: 3/5
+>      [A] 승인  [R] 반려
+>
+> ──────────────────────────────
 ```
 
 ---
@@ -177,6 +231,24 @@ color: var(--color-muted);
 - 터치 타겟 최소 높이: 52px
 - 하단 입력창 고정: `position: fixed; bottom: 0`
 - 키보드 대응: `padding-bottom: env(safe-area-inset-bottom)`
-- 채팅 영역만 스크롤, 헤더/입력창 고정
-- 최대 너비: 480px, 데스크탑에서 중앙 정렬
+- 최대 너비: 480px, 데스크탑 중앙 정렬
 - 좌우 패딩: 16px
+
+## 텍스트 줄바꿈 처리
+```css
+/* 일반 터미널 텍스트 — 모바일 줄바꿈 허용 */
+.terminal-line {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ASCII Art 전용 — 줄바꿈 금지, 극소화 */
+.ascii-art {
+  white-space: pre;
+  font-size: 8px;
+  line-height: 1.2;
+  overflow-x: hidden;
+}
+```
+- ASCII Art는 모바일용 축소 버전 별도 제작 (가로 30자 이내 권장)
+- 나머지 텍스트는 pre-wrap으로 자연스럽게 줄바꿈

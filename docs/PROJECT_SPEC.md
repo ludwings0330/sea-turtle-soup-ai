@@ -9,7 +9,7 @@ AI 진행자 역할의 수평적 사고 퍼즐(바다거북스프) 웹 게임
 - **AI 런타임**: Ollama (localhost:11434)
 - **Data**: 로컬 JSON (문제셋) + 파일 기반 (제출 대기열)
 - **배포**: Cloudflare Tunnel (외부 접속, 내 PC가 서버)
-- **디자인**: Mobile First
+- **디자인**: Mobile First, CLI 터미널 컨셉 (JetBrains Mono, 터미널 그린)
 
 ## 아키텍처
 ```
