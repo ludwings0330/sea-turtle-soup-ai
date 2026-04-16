@@ -35,7 +35,7 @@ ui: typing-animation, blinking-cursor, > prompt
 | scorer | y | mid | llama3.2:8b | llama3.2:8b |
 | host | y | mid | llama3.2:8b | llama3.2:8b |
 | hint | y | low | llama3.2:3b | llama3.2:3b |
-| judge | y | low | llama3.2:3b | llama3.2:3b |
+| judge | y | mid | qwen2.5:7b | claude-haiku |
 | story_loader | n | - | code | code |
 | admin_panel | n | - | code | code |
 
@@ -49,7 +49,7 @@ MODEL_CONFIG = {
   "scorer":          {"provider":"ollama","model":"llama3.2:8b"},
   "host":            {"provider":"ollama","model":"llama3.2:8b"},
   "hint":            {"provider":"ollama","model":"llama3.2:3b"},
-  "judge":           {"provider":"ollama","model":"llama3.2:3b"},
+  "judge":           {"provider":"ollama","model":"qwen2.5:7b"},
 }
 ```
 
@@ -243,3 +243,16 @@ milestone: complex agents on Claude/Gemini, simple on local, externally accessib
 - MODEL_CONFIG: single source of truth for all model switching
 - ADMIN_PASSWORD: env variable only, never hardcode
 - CORS: allow localhost:3000 only in dev
+
+---
+
+## 하네스: sea-turtle-soup-ai 개발
+
+**목표:** 거북이 수프 게임 개발을 위한 multi-agent 개발팀 조율
+
+**트리거:** 게임 개발, 구현, 에이전트 설계, 코드 작성, 테스트, Phase 진행 관련 작업 요청 시 `turtle-soup-dev` 스킬을 사용하라. 단순 질문은 직접 응답 가능.
+
+**변경 이력:**
+| 날짜 | 변경 내용 | 대상 | 사유 |
+|------|----------|------|------|
+| 2026-04-13 | 초기 구성 | 전체 | - |
